@@ -1,0 +1,22 @@
+server {
+    listen 80;
+    server_name localhost;
+    root '${SERVER_ROOT}';
+    index index.html index.php;
+
+    location / {
+        try_files $uri $uri/ /index.php$is_args$args;
+    }
+
+    location ~ \.php$ {
+        #root /var/www/hi8_web/web_hi8/public;
+        try_files $uri =404;
+        fastcgi_pass unix:/sock/php7.4-fpm.sock;
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
+    #error_log /var/log/nginx/socket/error.log;
+    #access_log /var/log/nginx/socket/access.log;
+}   

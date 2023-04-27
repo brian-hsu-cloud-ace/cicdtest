@@ -1,0 +1,53 @@
+## STATIC CONFIGURATION
+global:
+  sendAnonymousUsage: false
+
+entryPoints:
+  http:
+    address: ":80"
+#    http:
+#    redirections:
+#      entryPoint:
+#        to: https
+#        scheme: https
+  https:
+    address: ":443"
+
+certificatesResolvers:
+  myresolver:
+    acme:
+      email: brian.hsu@cloud-ace.com
+      #正式caServer
+      #caServer: https://acme-v02.api.letsencrypt.org/directory 
+      #測試用caServer
+      caServer: https://acme-staging-v02.api.letsencrypt.org/directory
+      storage: /etc/traefik/acme/acme.json
+#      httpChallenge:
+#        # used during the challenge
+#        entryPoint: http
+      dnsChallenge:
+        provider: gcloud
+
+accessLog:
+  filePath: "/var/log/traefik/access.log"
+
+log:
+#  level: DEBUG
+  level: INFO
+  format: common
+
+api:
+  dashboard: true
+  debug: true
+#  insecure: true
+
+providers:
+  docker:
+    network: dev
+    endpoint: "unix:///var/run/docker.sock"
+    watch: true
+    #下面這行對應容器的 labels: - traefik.enable=true
+    exposedByDefault: false
+  file:
+    directory: /etc/traefik/
+    watch: true

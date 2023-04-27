@@ -1,0 +1,25 @@
+version: '3.5'
+services:
+    mysql:
+        image: mysql:8.0
+        #container_name: hi8schoolDB
+        ports: 
+            - "33006:3306"
+        restart: unless-stopped
+        environment:
+            MYSQL_DATABASE: test
+            MYSQL_ROOT_PASSWORD: root
+            #MYSQL_ALLOW_EMPTY_PASSWORD: yes
+            #MYSQL_USER: brian
+            #MYSQL_PASSWORD: 74108520
+        volumes:
+        - ./data:/var/lib/mysql/
+        - ./mysql/mysqlconfig.cnf:/etc/mysql/my.conf/
+#        command: --default-authentication-plugin=mysql_native_password
+#        #設定mysql使用舊的身分驗證機制,如果新版無法使用
+        command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+        networks:
+            - dev
+networks:
+    dev:
+        external: true

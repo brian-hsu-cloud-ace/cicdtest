@@ -1,0 +1,42 @@
+version: '3.9'
+
+networks:
+  dev:
+    external: true
+volumes:
+  logs:
+
+#secrets:
+#  gcpfile:
+#    external: true
+
+services:
+  traefik:
+    image: traefik:2.9
+    container_name: traefik-2.9
+    restart: unless-stopped
+    ports:
+      # traefik暴露的http埠
+      - "80:80"
+      - "443:443"
+      # dashboard暴露的埠(必須加上--api.insecure=true才可以訪問, 或者在static config增加 insecure: true)
+      #- "8080:8080"
+#    environment:
+#      - GCE_SERVICE_ACCOUNT_FILE=/etc/traefik/acme/gcloud.json
+#    secrets:
+#      - gcpfile
+    volumes:
+      # 指定docker的sock檔案來讓traefik獲取docker的事件，從而實現動態負載均衡
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./traefik/dynamic.yml:/etc/traefik/dynamic.yml:ro
+      - ./traefik/acme/acme.json:/etc/traefik/acme/acme.json
+#      - /run/secrets/gcpfile:/etc/traefik/acme/gcloud.json
+      - logs:/var/log/traefik
+    labels:
+#      # Enable this container to be mapped by traefik
+#      # For more information, see: https://docs.traefik.io/providers/docker/#exposedbydefault
+      - traefik.enable=true
+#      - traefik.http.routers.traefik.rule=Host(`dashboard.hsu-brian.com`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
+    networks:
+      - dev

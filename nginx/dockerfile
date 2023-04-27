@@ -1,0 +1,39 @@
+FROM nginx:stable
+
+ARG USER
+ARG UID
+ARG GID
+#ENV user=${USER}
+
+RUN apt-get update && apt-get install -y procps \
+    cron \
+    logrotate \
+    vim \
+    zip \
+    unzip \
+    git \
+    net-tools \
+    curl
+
+RUN groupadd -g $GID $USER \
+&& useradd -s /bin/bash -M -u $UID -g $USER $USER \
+&& usermod -aG www-data $USER
+
+#RUN touch /var/run/nginx.pid
+
+COPY ./nginx.conf /etc/nginx/
+
+RUN rm -f /etc/nginx/conf.d/default.conf
+
+#RUN rm -f /etc/nginx/nginx.conf
+
+#RUN chown -Rf $USER:$USER \
+#    /var/run/nginx.pid \
+#    /var/cache/nginx \
+#    /var/log/nginx
+
+#USER $USER
+
+#將日誌輸出到 docker logs
+#RUN ln -sf /$USER/stdout /var/log/nginx/access.log \
+#&& ln -sf /$USER/stderr /var/log/nginx/error.log

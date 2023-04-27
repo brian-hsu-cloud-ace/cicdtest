@@ -1,0 +1,60 @@
+## Dynamic configuration
+http:
+  routers:
+    dashboard:
+      rule: Host(`dashboard.hsu-brian.com`)
+      service: api@internal
+      middlewares: 
+        - auth
+        - redirect-dashboard
+#      tls:
+#        certResolver: myresolver
+#        domains:
+#          - main: "hsu-brian.com"
+#            sans:
+#              - "*.hsu-brian.com"
+    http:
+      rule: Host(`hsu-brian.com`)
+      service: httplb
+    webs:
+      rule: Host(`webs.hsu-brian.com`)
+      service: httpslb
+
+    laravel:
+      rule: Host(`laravel.hsu-brian.com`)
+#      tls:
+#        certResolver: myresolver
+#        domains:
+#          - main: "hsu-brian.com"
+#            sans:
+#              - "*.hsu-brian.com"
+#      service: laravel
+
+
+  middlewares:
+    auth:
+      basicAuth:
+        users:
+          - "brian:$apr1$9kuvdBo9$lR.2PAy6Kg.rIKqG0vE2t/"
+    redirect-dashboard:
+      redirectRegex:
+#        regex: "^http?://dashboard\.hsu-brian\.com/?$"
+        regex: "^/$"
+        replacement: "/dashboard"
+        #永久定向 302
+#        permanent: true
+  services:
+    httplb:
+      loadBalancer:
+        servers:
+          - url: "http://webhttp.nginx.com:8001"
+
+    httpslb:
+      loadBalancer:
+        servers:
+          - url: "http://webhttps.nginx.com:8002"
+
+    laravel:
+      loadBalancer:
+        servers:
+          - url: "http://laravel.nginx.com:8003"

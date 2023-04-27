@@ -1,0 +1,82 @@
+version: '3.9'
+
+networks:
+  dev:
+    external: true
+volumes:
+  phpsocket:
+    external:
+      name: phpsocket
+  logs:
+
+services:
+  nginx_web:
+#    image: nginx:stable
+    container_name: nginx
+    build: 
+      context: ./nginx
+      args:
+        UID: ${UID}
+        GID: ${GID}
+        USER: ${USER}
+#    ports:
+#      - "80:80"
+#      - "443:443"
+    expose:
+      - "8001"
+      - "8002"
+      - "8003"
+      - "8004"
+    #user: "${UID}:${GID}"
+    working_dir: /var/www
+    restart: always
+    volumes:
+      - ./web:/var/www/
+#      - ./nginx/conf.d/web.conf:/etc/nginx/conf.d/web.conf:ro
+      - ./nginx/conf.d/traefik.conf:/etc/nginx/conf.d/traefik.conf:ro
+#      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - phpsocket:/run
+      - logs:/var/log/nginx
+      - logs:/var/log/traefik
+    labels:
+      #*星號為必要
+      #*因為有設定 exposedByDefault: false 所以告訴 Traefik 暴露這個容器
+      - traefik.enable=true
+#      #這個服務將響應來自下面domain
+#      - traefik.http.routers.traefik.rule=Host(`hsu-brian.com`)
+#      #(Options) 僅允許某個 entrypoints
+#      - traefik.http.routers.nginx_web.entrypoints=http
+#      - traefik.http.routers.nginx_web.tls.certResolver=myresolver
+    networks:
+      dev:
+        aliases:
+          - "webhttp.nginx.com"
+          - "webhttps.nginx.com"
+          - "laravel.nginx.com"
+
+  php:
+    #image: php:8.1-fpm
+    container_name: php-8.1-fpm
+    build: 
+      context: ./php
+      args:
+        UID: ${UID}
+        GID: ${GID}
+        USER: ${USER}
+    #user: "${USER}:${USER}"
+    working_dir: /var/www
+    restart: always
+    environment:
+      - "SHOWBUILDVER=1"
+      - "LARAVEL_LOG_PATH=/var/log/laravel/"
+      - "NGINX_LOG_PATH=/var/log/laravel/"
+      - "DOMAIN_CERT=google.com"
+      - "CLOUD_ENGINEER=brian.hsu@cloud-ace.com,miss1204lk@gmail.com"
+    volumes:
+      - ./web:/var/www
+      #- ./php/www.conf:/usr/local/etc/php/php-fpm.d/www.conf:ro
+      - ./php/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
+      - phpsocket:/run
+      - logs:/var/log/nginx
+    networks:
+      - dev
