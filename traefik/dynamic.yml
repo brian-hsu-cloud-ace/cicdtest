@@ -14,6 +14,7 @@ http:
 #            sans:
 #              - "*.hsu-brian.com"
     http:
+      entryPoints: https
       rule: Host(`hsu-brian.com`)
       service: httplb
     webs:
@@ -21,6 +22,7 @@ http:
       service: httpslb
 
     laravel:
+      entryPoints: https
       rule: Host(`laravel.hsu-brian.com`)
 #      tls:
 #        certResolver: myresolver
@@ -28,7 +30,7 @@ http:
 #          - main: "hsu-brian.com"
 #            sans:
 #              - "*.hsu-brian.com"
-#      service: laravel
+      service: laravel
 
 
   middlewares:
