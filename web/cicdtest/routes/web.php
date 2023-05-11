@@ -1,7 +1,8 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\GoogleIapController;
+use Illuminate\Support\Facades\Http;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,20 +15,22 @@ use App\Http\Controllers\GoogleIapController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+#Route::get('/', function () {
+#    return view('welcome');
+#});
 
-Route::view('/login', 'test');
+#Route::get('/test', AuthController::class);
+
+#Route::view('/test', 'test');
 
 #Route::get('/login', GoogleIapController::class);
 
-##session啟動
-#Route::group(['middleware' => 'web'], function () {
-#    #需要登入驗證的都放進這邊
-#    Route::middleware(['googleiap'])->group(function () {
-#        Route::get('/', function () {
-#            return view('test');
-#        });
+#session啟動
+Route::group(['web'], function () {
+    #需要登入驗證的都放進這邊
+#    Route::middleware(['Istrust'])->group(function () {
+        Route::get('/', function (Request $request) {
+            return view('welcome');
+        });
 #    });
-#});
+});

@@ -12,15 +12,6 @@
 
     </head>
     <body>
-        恭喜你進來了！！
+        {{ $data }}
     </body>
 </html>
-
-<script src="https://www.gstatic.com/firebasejs/8.0/firebase.js"></script>
-<script>
-  var config = {
-    apiKey: "AIzaSyADsArcsZfl5wUoQdLR5c_flzSRWcUdHjc",
-    authDomain: "seminar-and-workshop.firebaseapp.com",
-  };
-  firebase.initializeApp(config);
-</script>

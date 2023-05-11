@@ -14,7 +14,6 @@ http:
 #            sans:
 #              - "*.hsu-brian.com"
     http:
-      entryPoints: https
       rule: Host(`hsu-brian.com`)
       service: httplb
     webs:
@@ -22,7 +21,6 @@ http:
       service: httpslb
 
     laravel:
-      entryPoints: https
       rule: Host(`laravel.hsu-brian.com`)
 #      tls:
 #        certResolver: myresolver
@@ -31,7 +29,6 @@ http:
 #            sans:
 #              - "*.hsu-brian.com"
       service: laravel
-
 
   middlewares:
     auth:
@@ -49,14 +46,14 @@ http:
     httplb:
       loadBalancer:
         servers:
-          - url: "http://webhttp.nginx.com:8001"
+          - url: "http://webhttp.nginx.com"
 
     httpslb:
       loadBalancer:
         servers:
-          - url: "http://webhttps.nginx.com:8002"
+          - url: "http://webhttps.nginx.com"
 
     laravel:
       loadBalancer:
         servers:
-          - url: "http://laravel.nginx.com:8003"
+          - url: "http://laravel.nginx.com"

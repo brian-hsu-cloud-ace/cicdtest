@@ -6,7 +6,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
-        "google/auth": "^1.26",
         "guzzlehttp/guzzle": "^7.2",
         "guzzlehttp/psr7": "^2.5",
         "laravel/framework": "^10.8",

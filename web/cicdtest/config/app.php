@@ -182,6 +182,7 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
+        'GoogleOAuth2' => App\Http\Controllers\AuthController::class,
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 
